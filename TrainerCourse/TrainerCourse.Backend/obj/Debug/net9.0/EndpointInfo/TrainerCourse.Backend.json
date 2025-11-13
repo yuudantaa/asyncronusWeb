@@ -101,7 +101,7 @@
         }
       }
     },
-    "/Courses/file": {
+    "/Courses/upload": {
       "post": {
         "tags": [
           "TrainerCourse.Backend"

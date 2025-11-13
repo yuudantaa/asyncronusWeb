@@ -98,9 +98,25 @@ app.MapDelete("/Courses/{id}", (ICourse courseData, int id) => {
     }
 });
 
-app.MapPost("/Courses/file", (ICourse courseData, IFormFile file) => {
-    courseData.uploadImage(file);
-    return Results.Ok();
+app.MapPost("/Courses/upload", async (ICourse courseData, IFormFile file) => {
+    try
+    {
+        var fileName = courseData.uploadImage(file);
+        return Results.Ok(new
+        {
+            success = true,
+            fileName = fileName,
+            imageUrl = $"/uploads/{fileName}"
+        });
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(new
+        {
+            success = false,
+            message = ex.Message
+        });
+    }
 }).DisableAntiforgery();
 
 app.MapGet("/Courses/search/{searchTerm}", (ICourse courseData, IMapper mapper, string searchTerm) =>

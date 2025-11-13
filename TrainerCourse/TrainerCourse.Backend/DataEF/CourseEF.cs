@@ -98,35 +98,51 @@ namespace TrainerCourse.Backend.DataEF
                 existingCourse.Duration = course.Duration;
                 existingCourse.TrainerId = course.TrainerId;
                 existingCourse.CourseType = course.CourseType;
+
+                // Jangan lupa update ImageFileName jika ada
+                if (!string.IsNullOrEmpty(course.ImageFileName))
+                {
+                    existingCourse.ImageFileName = course.ImageFileName;
+                }
+
                 _context.Courses.Update(existingCourse);
                 _context.SaveChanges();
                 return existingCourse;
             }
-
             catch (Exception ex)
             {
-                throw new Exception("Could not update category", ex);
+                throw new Exception("Could not update course", ex);
             }
         }
 
         public string uploadImage(IFormFile file)
         {
-            //extension
+            // Extension validation
             List<string> validExtensions = new List<string>() { ".png", ".jpg", ".jpeg" };
             string extension = Path.GetExtension(file.FileName);
-            if (!validExtensions.Contains(extension))
+            if (!validExtensions.Contains(extension.ToLower()))
             {
-                return $"extension isnt valid ({string.Join(',', validExtensions)})";
+                throw new Exception($"Extension is not valid ({string.Join(',', validExtensions)})");
             }
-            //size
+
+            // Size validation
             long size = file.Length;
             if (size > (5 * 1024 * 1024))
-                return "file size is too large (max 5MB)";
-            //name change
+                throw new Exception("File size is too large (max 5MB)");
+
+            // Name change and save
             string fileName = Guid.NewGuid().ToString() + extension;
             string path = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+
+            // Ensure directory exists
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
             using FileStream stream = new FileStream(Path.Combine(path, fileName), FileMode.Create);
             file.CopyTo(stream);
+
             return fileName;
         }
     }

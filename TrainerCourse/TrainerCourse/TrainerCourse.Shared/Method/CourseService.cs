@@ -15,6 +15,7 @@ namespace TrainerCourse.Shared.Method
     {
         private readonly HttpClient _httpClient;
         private const string BaseUrl = "https://localhost:7285/courses";
+        private const string BaseApiUrl = "https://localhost:7285";
 
         public CourseService(HttpClient httpClient)
         {
@@ -145,26 +146,26 @@ namespace TrainerCourse.Shared.Method
                 fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
                 content.Add(fileContent, "file", file.Name);
 
-                // Send request
-                var response = await _httpClient.PostAsync($"{BaseUrl}/file", content);
+                // Send request to correct endpoint
+                var response = await _httpClient.PostAsync($"{BaseUrl}/upload", content);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var fileName = await response.Content.ReadAsStringAsync();
+                    var result = await response.Content.ReadFromJsonAsync<UploadResult>();
                     return new ImageUploadResponse
                     {
                         Success = true,
-                        FileName = fileName,
-                        ImageUrl = $"/uploads/{fileName}"
+                        FileName = result.FileName,
+                        ImageUrl = result.ImageUrl
                     };
                 }
                 else
                 {
-                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    var errorResult = await response.Content.ReadFromJsonAsync<ErrorResult>();
                     return new ImageUploadResponse
                     {
                         Success = false,
-                        Message = $"Upload failed: {errorMessage}"
+                        Message = errorResult?.Message ?? "Upload failed"
                     };
                 }
             }
