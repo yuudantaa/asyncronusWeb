@@ -70,11 +70,21 @@ namespace TrainerCourse.Shared.Method
             try
             {
                 var response = await _httpClient.GetFromJsonAsync<List<Course>>(BaseUrl);
+
+                // Debug: Cek apakah data gambar ada
+                if (response != null)
+                {
+                    foreach (var course in response)
+                    {
+                        Console.WriteLine($"Course: {course.CourseName}, ImageUrl: {course.ImageUrl}");
+                    }
+                }
+
                 return response ?? new List<Course>();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error fetching Course0: {ex.Message}");
+                Console.WriteLine($"Error fetching Course: {ex.Message}");
                 return new List<Course>();
             }
         }
@@ -181,7 +191,7 @@ namespace TrainerCourse.Shared.Method
 
         public async Task<string> GetImageUrlAsync(string fileName)
         {
-            return await Task.FromResult($"/uploads/{fileName}");
+            return await Task.FromResult($"https://localhost:7285/uploads/{fileName}");
         }
     }
 }

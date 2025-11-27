@@ -1,6 +1,10 @@
 ﻿using Android.App;
 using Android.Runtime;
 
+[assembly: UsesPermission(Android.Manifest.Permission.Camera)]
+[assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]
+[assembly: UsesPermission(Android.Manifest.Permission.ReadExternalStorage)]
+
 namespace TrainerCourse
 {
     [Application]

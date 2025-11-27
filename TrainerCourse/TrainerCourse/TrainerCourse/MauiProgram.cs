@@ -19,6 +19,7 @@ namespace TrainerCourse
 
             // Add device-specific services used by the TrainerCourse.Shared project
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
+            builder.Services.AddSingleton<ICameraService, CameraService>();
             builder.Services.AddHttpClient<ITrainerService, TrainerService>(client =>
             {
                 client.BaseAddress = new Uri("https://localhost:7285/");

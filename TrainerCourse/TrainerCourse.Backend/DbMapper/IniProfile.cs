@@ -10,7 +10,9 @@ namespace TrainerCourse.Backend.DbMapper
         {
             // Course Mapping
             CreateMap<Course, CourseDTO>()
-                .ForMember(dest => dest.Trainer, opt => opt.MapFrom(src => src.Trainer));
+                .ForMember(dest => dest.Trainer, opt => opt.MapFrom(src => src.Trainer))
+                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl))
+                .ForMember(dest => dest.ImageFileName, opt => opt.MapFrom(src => src.ImageFileName));
 
             CreateMap<CourseAddDTO, Course>();
             CreateMap<Course, CourseAddDTO>();
